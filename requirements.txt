@@ -6,4 +6,4 @@ mammoth
 num2words
 graphviz
 openpyxl
-xlxxwriter
+xlxwriter
