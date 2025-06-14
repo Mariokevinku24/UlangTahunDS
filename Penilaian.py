@@ -52,7 +52,7 @@ with st.form("form_penilaian"):
     nilai_komponen = {}
 
     for k in KOMPONEN:
-        nilai = st.number_input(k, min_value=0, max_value=10, step=1, key=k)
+        nilai = st.number_input(k, min_value=0, max_value=100, step=5, key=k)
         nilai_komponen[k] = nilai
         total_nilai += nilai
 
