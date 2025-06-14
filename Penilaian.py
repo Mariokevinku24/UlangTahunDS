@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+from pytz import timezone
 import pandas as pd
 import os
 
@@ -74,7 +75,7 @@ with st.form("form_penilaian"):
 
     if submitted and nama_instansi and nama_penilai:
         data_baru = {
-            "Waktu": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Waktu": datetime.now(timezone("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M:%S"),
             "Nama Instansi": nama_instansi,
             "Nama Penilai": nama_penilai,
             "Total Nilai (Maks 1100)": total_nilai,
