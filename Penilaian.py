@@ -24,7 +24,6 @@ KOMPONEN = [
     "11. Bank Sampah"
 ]
 
-# Fungsi load/save
 def load_data():
     if os.path.exists(CSV_FILE) and os.path.getsize(CSV_FILE) > 0:
         try:
@@ -36,11 +35,10 @@ def load_data():
 def save_data(data):
     pd.DataFrame(data).to_csv(CSV_FILE, index=False)
 
-# Init session state
+# Load data awal
 if "penilaian_data" not in st.session_state:
     st.session_state.penilaian_data = load_data()
 
-# Form input
 with st.form("form_penilaian"):
     col1, col2 = st.columns(2)
     with col1:
@@ -52,20 +50,22 @@ with st.form("form_penilaian"):
     nilai_komponen = {}
 
     for k in KOMPONEN:
-        nilai = st.number_input(k, min_value=0, max_value=100, step=5, key=k)
+        nilai = st.number_input(k, min_value=0, max_value=100, step=1, key=k)
         nilai_komponen[k] = nilai
         total_nilai += nilai
 
-    # Kategori berdasarkan total
-    if total_nilai >= 81:
+    # Hitung rata-rata untuk klasifikasi kategori
+    rata_rata = round(total_nilai / len(KOMPONEN), 2)
+
+    if rata_rata >= 81:
         kategori = "Sangat Baik"
-    elif total_nilai >= 71:
+    elif rata_rata >= 71:
         kategori = "Baik"
-    elif total_nilai >= 61:
+    elif rata_rata >= 61:
         kategori = "Sedang"
-    elif total_nilai >= 46:
+    elif rata_rata >= 46:
         kategori = "Jelek"
-    elif total_nilai >= 30:
+    elif rata_rata >= 30:
         kategori = "Sangat Jelek"
     else:
         kategori = "Belum Memadai"
@@ -77,7 +77,8 @@ with st.form("form_penilaian"):
             "Waktu": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "Nama Instansi": nama_instansi,
             "Nama Penilai": nama_penilai,
-            "Total Nilai": total_nilai,
+            "Total Nilai (Maks 1100)": total_nilai,
+            "Rata-rata Nilai": rata_rata,
             "Kategori": kategori
         }
         data_baru.update(nilai_komponen)
@@ -85,7 +86,7 @@ with st.form("form_penilaian"):
         save_data(st.session_state.penilaian_data)
         st.success("✅ Penilaian berhasil disimpan!")
 
-# Tampilkan data tersimpan
+# Tampilkan data
 st.markdown("---")
 st.subheader("📑 Daftar Penilaian Tersimpan")
 
@@ -118,3 +119,4 @@ if st.session_state.penilaian_data:
             st.error("❌ Password salah.")
 else:
     st.info("Belum ada data penilaian disimpan.")
+
